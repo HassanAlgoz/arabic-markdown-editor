@@ -31,16 +31,9 @@ class Item {
 
     String() {
         let typ = this.typ
-        switch (this.typ) {
-            case itemError: typ = "Error"; break
-            case itemText: typ = "Text"; break
-            case itemStartBold: typ = "StartBold"; break
-            case itemEndBold: typ = "EndBold"; break
-            case itemStartItalic: typ = "StartItalic"; break
-            case itemEndItalic: typ = "EndItalic"; break
-            case itemBang: typ = "Bang"; break
-            case itemEOF: typ = "EOF"; break
-        }
+        // switch (this.typ) {
+        //     case itemError: typ = "Error"; break
+        //     case itemText: typ = "Text"; break
         return `${this.val} <${typ}>`
     }
 }
@@ -249,7 +242,6 @@ class Lexer {
 let input = `
 
 The quick **brown** fox jumped over the *lazy
-
 * dog.`
 // let input = `السلام عليكم **ورحمة الله** وبركاته`
 const lexer = new Lexer(input)
@@ -259,31 +251,16 @@ console.log(lexer.items)
 let html = "";
 lexer.items.forEach(item => {
     switch (item.typ) {
-        case itemText: {
-            html += item.val
-            break
-        }
-
-        case itemStartBold: {
-            html += "<b>"
-            break
-        }
-        case itemEndBold: {
-            html += "</b>"
-            break
-        }
-
-        case itemStartItalic: {
-            html += "<i>"
-            break
-        }
-        case itemEndItalic: {
-            html += "</i>"
-            break
-        }
+        case itemText: html += item.val; break
+        case itemStartBold: html += "<b>"; break
+        case itemEndBold: html += "</b>"; break
+        case itemStartItalic: html += "<i>"; break
+        case itemEndItalic: html += "</i>"; break
+        case itemLinebreak: html += "<br/>"
     }
 })
-console.log(html)
+console.log("input:", input)
+console.log("output:", html)
 // for (let i = 0; i < lexer.items.length; i++) {
 // }
 // for(let i = 2; i < lexer.items.length - 2; i++) {
