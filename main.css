@@ -1,0 +1,145 @@
+@import url('http://fonts.googleapis.com/earlyaccess/droidarabickufi.css');
+
+/* @font-face {
+    font-family: 'Droid Arabic Naskh';
+    font-style: normal;
+    font-weight: 400;
+    src: url(../fonts/DroidArabicNaskh/DroidNaskh-Regular.ttf) format('truetype')
+} */
+/* font-family: 'Droid Arabic Naskh',Helvetica,Arial,sans-serif; */
+
+* {
+	/* font: 14px 'lucida grande',tahoma,verdana,arial,sans-serif;
+	line-height: 26px;
+	color: #f8f8f8; */
+	line-height: 26px;
+}
+
+html,
+body,
+#app {
+	height: 100%;
+	min-height: 100%;
+	margin: 0;
+    padding: 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 30px;
+    grid-template-rows: 26px 1fr 1fr 26px;
+    grid-template-areas: 
+    "topBar topBar topBar"
+    "preview code lineNumbers"
+    "preview code lineNumbers"
+    "bottomBar bottomBar bottomBar"
+	;
+    /* grid-gap: 0px; */
+}
+
+#topBar {
+	grid-area: topBar;
+	background-color: rgb(37, 37, 38);
+	color: #f8f8f8;
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-template-areas: "topBar-left topBar-right";
+	/* grid-gap: 10px; */
+}
+#topBar-left {
+	grid-area: topBar-left;
+	direction: rtl;
+}
+#topBar-right {
+	grid-area: topBar-right;
+	direction: rtl;
+	text-align: center;
+}
+#topBar-right button {
+	width: 32px;
+	height: 26px;
+
+}
+#topBar-right button img {
+	width: 18px;
+	height: 18px;
+}
+#code {
+	grid-area: code;
+	direction: rtl;
+	font: 14px 'Droid Arabic Kufi', monospace;
+	vertical-align: middle;
+	background-color: #131314;
+	vertical-align: baseline;
+	color: #F8F8F0;
+	outline: none;
+	resize: none;
+	border: none;
+}
+#code:focus {
+	border: none;
+}
+
+#lineNumbers {
+	grid-area: lineNumbers;
+	direction: rtl;
+	font: 14px 'Droid Arabic Kufi', monospace;
+	vertical-align: text-bottom;
+	background-color: #131314;
+	vertical-align: baseline;
+	text-align: center;
+	color: #868686;
+	overflow: hidden;
+	outline: none;
+	resize: none;
+	border: none;
+}
+
+#preview {
+	grid-area: preview;
+	background-color: rgb(248, 244, 207);
+	color: black;
+	direction: rtl;
+	overflow-y: auto;
+	font-size: 14px;
+	font-family: 'Droid Arabic Kufi', monospace;
+	padding: 14px;
+}
+#bottomBar {
+	grid-area: bottomBar;
+	background-color: rgb(0, 122, 204);
+	color: #F8F8F0;
+	font-size: 12px;
+	font-family: 'Lato', 'Helvetica Neue', 'Helvetica', 'sans-serif';
+}
+
+button {
+	height: 100%;
+	background-color: whitesmoke;
+	border: 1px solid #f8f8f8;
+}
+button:hover {
+	cursor: pointer;
+}
+
+pre {
+	direction: ltr;
+	background-color: #131314;
+	color: #F8F8F0;
+	padding: 16px;
+}
+
+/* @media screen and (min-width: 736px)
+{
+    .grid {
+        display: grid;
+        grid-template-columns: 1fr 500px 500px 1fr;
+        grid-template-rows: 1fr 1fr 1fr 1fr;
+        grid-template-areas: 
+        ". title title ."
+        ". header header ."
+        ". sidebar content ."
+        ". footer footer ."
+        ;
+    }
+} */

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, shrink-to-fit=no">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Title</title>
+	<!-- CSS -->
+	<link rel="stylesheet" href="main.css">
+</head>
+<body>
+	<div id="app" class="grid">
+		
+		<!-- Top Bar -->
+		<div id="topBar">
+			<div id="topBar-left">
+			</div>
+			<div id="topBar-right">
+				<button @click="insertLink()"><img src="./img/icons/icons8-attach-50.png" alt="Link"></button>
+				<button @click="insertImage()"><img src="./img/icons/icons8-image-50.png" alt="Image"></button>
+				<button @click="insertCode()"><img src="./img/icons/icons8-source-code-filled-50.png" alt="Code"></button>
+				<button @click="insertBold()"><img src="./img/icons/icons8-bold-50.png" alt="Bold"></button>
+				<button @click="insertItalic()"><img src="./img/icons/icons8-italic-50.png" alt="Italic"></button>
+				<button @click="saveText()"><img src="./img/icons/icons8-download-24.png" alt="Download"></button>
+			</div>
+		</div>
+
+		<div id="lineNumbers" v-html="lineNumbers"></div>
+		<textarea
+			id="code"
+			v-model="code"
+			autofocus
+			@keydown.alt.76.prevent="insertLink()"
+			@keydown.ctrl.enter.prevent="indent()"
+			@keydown.ctrl.shift.enter.prevent="outdent()"
+			onkeypress="keypress(event)"
+			onkeyup="keyup(event)"
+			>
+		</textarea>
+
+		<div id="preview" v-html="preview"></div>
+		
+		<!-- Bottom Bar -->
+		<div id="bottomBar">
+			CapsLock: {{capsLock? 'ON' : 'OFF'}}
+			| length: {{length}}
+		</div>
+
+	
+	<!-- SCRIPTS -->
+	<!-- lib -->
+	<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.8.6/showdown.min.js"></script>
+	<!-- user -->
+	<script src="parser.js"></script>
+	<script src="main.js"></script>
+</body>
+</html>
