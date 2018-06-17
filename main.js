@@ -1,4 +1,7 @@
+import { KEYS } from './globals.js'
+import { Text } from './text.js'
 console.log('main.js')
+
 const converter = new showdown.Converter()
 
 const app = new Vue({
@@ -14,7 +17,10 @@ const app = new Vue({
 
 	methods: {
 		insertLink() {
-			this.wrapSelected(['[', ']()'])
+			let link = window.prompt("Enter Link")
+			if (link) {
+				this.wrapSelected(['[', ']('+link+')'])
+			}
 		},
 		insertParenthesis() {
 			this.wrapSelected(['(', ')'])
@@ -26,7 +32,10 @@ const app = new Vue({
 			this.wrapSelected(['{', '}'])
 		},
 		insertImage() {
-			this.wrapSelected(['![', ']()'])
+			let link = window.prompt("Enter Image Link")
+			if (link) {
+				this.wrapSelected(['[', ']('+link+')'])
+			}
 		},
 		insertCode() {
 			this.wrapSelected(['```\n', '\n```'])
@@ -58,22 +67,7 @@ const app = new Vue({
 		},
 
 		saveText() {
-			const text = this.code;
-			const fname = "saved.md"
-			const blob = new Blob([text], { type: 'text/plain' });
-			if (window.saveAs) {
-			  window.saveAs(blob, fname);
-			} else if (navigator.saveBlob) {
-			  navigator.saveBlob(blob, fname);
-			} else {
-			  url = URL.createObjectURL(blob);
-			  const link = document.createElement("a");
-			  link.setAttribute("href",url);
-			  link.setAttribute("download",fname);
-			  const event = document.createEvent('MouseEvents');
-			  event.initMouseEvent('click', true, true, window, 1, 0, 0, 0, 0, false, false, false, false, 0, null);
-			  link.dispatchEvent(event);
-			}
+			Text.Download(this.code, "saved.md")
 		}
 	},
 
@@ -89,9 +83,7 @@ const app = new Vue({
 					numbers.push(numbers.length + 1)
 				}
 			}
-			// return numbers.join("<br/>")
-			// return numbers.join("\n")
-			return numbers.map(convertDigits2Arabic).join("<br/>")
+			return numbers.join("<br/>")
 		},
 
 		length() {
@@ -110,12 +102,17 @@ function initDocumentElements() {
 	$code = document.getElementById('code');
 }
 
-const KEYS = {
-	RIGHT_PAREN: 40, /* ) */
-	RIGHT_BRACKET: 91, /* ] */
-	RIGHT_CURLY: 123, /* } */
-	S: 83,
-}
+document.addEventListener('keydown', (evt) => {
+	// Update CapsLock state
+	app.capsLock = evt.getModifierState('CapsLock')
+
+	// Ctrl + S: Saves (and downloads) markdown in ".md" format
+	if (evt.keyCode == KEYS.S && (evt.ctrlKey || evt.metaKey)) {
+		evt.preventDefault();
+		app.saveText()
+		return false;
+	}
+})
 
 function keypress(evt) {
 	const keyCode = evt.keyCode;
@@ -126,19 +123,19 @@ function keypress(evt) {
 			evt.preventDefault();
 			app.insertParenthesis()
 			return false;
-		} break;
+		}
 
 		case KEYS.RIGHT_BRACKET: {
 			evt.preventDefault();
 			app.insertBrackets()
 			return false;
-		} break;
+		}
 
 		case KEYS.RIGHT_CURLY: {
 			evt.preventDefault();
 			app.insertCurlyBrackets()
 			return false;
-		} break;
+		}
 	}
 	
 	// Print Arabic digits instead of English digits
@@ -149,6 +146,34 @@ function keypress(evt) {
 	// 	document.execCommand('insertText', false, num)
 	// }
 }
+
+
+// Drag and Drop loads text file
+// Prevent browser from viewing the file as a page upon dropping it accidentally outside the dropbox borders
+window.URL = window.URL || window.webkitURL
+window.addEventListener("dragenter", (e) => { e.preventDefault() });
+window.addEventListener("dragover", (e) => { e.preventDefault() });
+window.addEventListener("drop", (e) => { e.preventDefault() });
+// Dropping a text.md file loads it.
+document.addEventListener('drop', function(evt) {
+	evt.preventDefault();
+	evt.stopPropagation();
+	Text.LoadFile(evt.dataTransfer.files[0])
+	.then(text => {
+		app.code = text
+	})
+	.catch(console.error)
+}, false);
+
+
+window.addEventListener('load', () => {
+	initDocumentElements()	
+	// bind text area with num of lines column (y-scrolling)
+	$code.addEventListener('scroll', (evt) => {
+		$lineNumbers.scrollTop = $code.scrollTop;
+	})
+})
+
 
 function keyup(evt) {
 	// Dot Separation of characters when capsLock is on.
@@ -165,60 +190,3 @@ function isAlphaArabic(codePoint) {
 	// From Aliph to Yaa' excluding "Tatweel" letter.
 	return (codePoint >= 0x620 && codePoint <= 0x64A && codePoint !== 0x640)
 }
-
-document.addEventListener('keydown', (evt) => {
-	// Update CapsLock state
-	app.capsLock = evt.getModifierState('CapsLock')
-
-	// Ctrl + S: Saves (and downloads) markdown in ".md" format
-	if (evt.keyCode == KEYS.S && (evt.ctrlKey || evt.metaKey)) {
-		evt.preventDefault();
-		app.saveText()
-		return false;
-	}
-})
-
-function convertDigits2Arabic(str) {
-	str = str + '' // convert to string (if number)
-	return str.replace(/0/g, '\u0660')
-	.replace(/1/g, '\u0661')
-	.replace(/2/g, '\u0662')
-	.replace(/3/g, '\u0663')
-	.replace(/4/g, '\u0664')
-	.replace(/5/g, '\u0665')
-	.replace(/6/g, '\u0666')
-	.replace(/7/g, '\u0667')
-	.replace(/8/g, '\u0668')
-	.replace(/9/g, '\u0669')
-}
-
-function dragAndDrop(callback) {
-	// Prevent browser from viewing the file as a page upon dropping it accidentally outside the dropbox borders
-	window.URL = window.URL || window.webkitURL
-	window.addEventListener("dragenter", (e) => { e.preventDefault() });
-	window.addEventListener("dragover", (e) => { e.preventDefault() });
-	window.addEventListener("drop", (e) => { e.preventDefault() });
-	// Dropping a text.md file loads it.
-	document.addEventListener('drop', function(evt) {
-		evt.preventDefault();
-		evt.stopPropagation();
-		callback(evt)
-	}, false);
-}
-// Load Text File
-dragAndDrop(evt => {
-	const reader = new FileReader();
-	reader.onload = function(evt) {
-		app.code = evt.target.result
-	};
-	console.log(evt.dataTransfer.files[0])
-	reader.readAsText(evt.dataTransfer.files[0]);
-})
-
-window.addEventListener('load', () => {
-	initDocumentElements()	
-	// bind text area with num of lines column (y-scrolling)
-	$code.addEventListener('scroll', (evt) => {
-		$lineNumbers.scrollTop = $code.scrollTop;
-	})
-})
