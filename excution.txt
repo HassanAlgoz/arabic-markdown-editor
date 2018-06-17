@@ -1,8 +1,0 @@
-When you input 'Tatweel' after the first character, it will automatically do it for the rest of the word
-In preferences you can adjust rules of 'Tatweel', like how many and between what characters
-You can highlight the word and input 'Tatweel' so that it is applied on the word between each two characters
-Exceptions for 'Tatweel' should be handled
-
-السلام عليكم (0 Tatweel)
-الـسـلام عـلـيـكـم (1 Tatweel)
-الــســلام عــلــيــكــم (2 Tatweels)
